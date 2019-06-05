@@ -12,8 +12,10 @@
 #include <stdint.h>
 #include "funbits.h"
 #include "simulador.h"
+#include "hardware.h"
 
 int main (void) {
+    hardware();
     simulate();
     return 0;
 }

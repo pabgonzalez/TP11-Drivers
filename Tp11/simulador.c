@@ -10,6 +10,7 @@
  ******************************************************************************/
 #include <stdio.h>
 #include "funbits.h"
+#include "hardware.h"
 #include "simulador.h"
 
 /*******************************************************************************
@@ -27,6 +28,7 @@ static void turn_off(void);
 static void negate(void);
 static void printLeds(void);
 static void cleanBuffer(void);
+static void rpLeds (void);
 
 /*******************************************************************************
  *******************************************************************************
@@ -56,6 +58,7 @@ void simulate(void){
             printf("Operacion invalida\n");
         }
         printLeds();                            //Imprime el estado de los leds.
+        rpLeds();
     }
     printf("Fin de la simulacion\n");           
     cleanBuffer();
@@ -114,6 +117,14 @@ static void cleanBuffer(void){
     while(getchar() != '\n'){}
     return;
 }
+
+static void rpLeds (void){
+    int i;
+    for (i=0 ; i<BYTE ; i++) {
+        carpeta(leds[i] , folder , "/value");
+        set_status( (char)bitGet('A' , i) , folder );
+    }
+} 
 
 /*******************************************************************************
  ******************************************************************************/

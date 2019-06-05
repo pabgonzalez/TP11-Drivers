@@ -1,0 +1,12 @@
+
+*.inc
+*.o
+*.d
+*.mk
+*.xml
+*.bash
+*.exe
+*.cpp
+*.c
+*.properties
+Tp11/Makefile

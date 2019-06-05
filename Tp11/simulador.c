@@ -28,7 +28,7 @@ static void turn_off(void);
 static void negate(void);
 static void printLeds(void);
 static void cleanBuffer(void);
-static void rpLeds (void);
+
 
 /*******************************************************************************
  *******************************************************************************
@@ -118,13 +118,7 @@ static void cleanBuffer(void){
     return;
 }
 
-static void rpLeds (void){
-    int i;
-    for (i=0 ; i<BYTE ; i++) {
-        carpeta(leds[i] , folder , "/value");
-        set_status( (char)bitGet('A' , i) , folder );
-    }
-} 
+
 
 /*******************************************************************************
  ******************************************************************************/

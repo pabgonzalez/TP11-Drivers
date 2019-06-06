@@ -14,17 +14,19 @@
 #define carpeta_pin(led) "/sys/class/gpio/gpio" led "/value"
 
 const char * leds[] = {"17","4","18","23","24","25","22","27"};  
-char folder[33]={"/sys/class/gpio/gpio"}; 
+
+char folder[33]={"/sys/class/gpio/gpio"};
+char * puntero = &folder[20];
 
 static void export_led (const char *ledx);
 static void set_direction_out (char *carpeta);
- void carpeta (const char * puerto, char * folder , const char *final);
+void carpeta (const char * puerto, char * folder , const char *final);
 
 void hardware (void) {
     int i;
-    for(i=0 ; i<BYTE ; ) {
+    for(i=0 ; i<BYTE ; i++) {
         export_led( leds[i] );
-        carpeta(leds[i] , folder , "/direction");
+        carpeta(leds[i] , puntero , "/direction");
         set_direction_out(folder);
     }
     return;
@@ -96,21 +98,19 @@ void set_status (char state , char * pin)
 }
 
  void carpeta (const char * puerto, char * folder , const char *final) {
-    while(*folder++){}
-    folder--;
-    while(*puerto++){
-        *folder++ = *puerto;
+    while(*puerto){
+        *folder++ = *puerto++;
     }
     while(*final) {
         *folder++ = *final++;
     }
-    *folder = 0;
+    *folder = '\0';
 }
  
 void rpLeds (void){
     int i;
     for (i=0 ; i<BYTE ; i++) {
-        carpeta(leds[i] , folder , "/value");
+        carpeta(leds[i] , puntero , "/value");
         set_status( (char)bitGet('A' , i) , folder );
     }
 } 

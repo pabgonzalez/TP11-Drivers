@@ -10,3 +10,5 @@
 *.c
 *.properties
 Tp11/Makefile
+test/test.exe.stackdump
+test/Makefile

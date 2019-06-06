@@ -16,6 +16,7 @@
 const char * leds[] = {"17","4","18","23","24","25","22","27"};  
 
 char folder[33]={"/sys/class/gpio/gpio"};
+
 char * puntero = &folder[20];
 
 static void export_led (const char *ledx);
@@ -26,9 +27,18 @@ void hardware (void) {
     int i;
     for(i=0 ; i<BYTE ; i++) {
         export_led( leds[i] );
-        carpeta(leds[i] , puntero , "/direction");
-        set_direction_out(folder);
+        //carpeta(leds[i] , puntero , "/direction");
+        //printf("FOlder: %s, i = %d\n", folder, i);
+        //set_direction_out(folder);
     }
+    set_direction_out("/sys/class/gpio/gpio17/direction");
+    set_direction_out("/sys/class/gpio/gpio4/direction");
+    set_direction_out("/sys/class/gpio/gpio18/direction");
+    set_direction_out("/sys/class/gpio/gpio23/direction");
+    set_direction_out("/sys/class/gpio/gpio24/direction");
+    set_direction_out("/sys/class/gpio/gpio25/direction");
+    set_direction_out("/sys/class/gpio/gpio22/direction");
+    set_direction_out("/sys/class/gpio/gpio27/direction");
     return;
 }
 
@@ -57,8 +67,9 @@ static void export_led (const char *ledx) {
 static void set_direction_out (char *carpeta) {
     FILE * handle_direction;
     int nWritten;
+    printf("Escribo en: %s\n", carpeta);
     if ((handle_direction= fopen(carpeta,"w")) == NULL) {
-        printf("Cannot open DIRECTION File");
+        printf("Cannot open DIRECTION File %s\n", carpeta);
         exit(1);
     }
     // Set pin Direction
@@ -69,7 +80,7 @@ static void set_direction_out (char *carpeta) {
     else {
         printf("DIRECTION File for PIN opened succesfully\n");
     }
-    fclose(handle_direction); // Be carefulldo this for EACH pin !!!
+    fclose(handle_direction); // Be carefull do this for EACH pin !!!
     return;
 }
 

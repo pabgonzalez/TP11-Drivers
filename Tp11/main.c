@@ -14,6 +14,8 @@
 #include "simulador.h"
 #include "hardware.h"
 
+#define BYTE    8
+
 int main (void) {
     hardware();
     simulate();

@@ -98,7 +98,7 @@ static void printLeds(void){
     printf("|     PORTA     |\n");
     printf("-----------------\n");
     putchar('|');
-    for(i = 0; i < BYTE; i++){                     //Imprime el estado de cada led.
+    for(i = BYTE-1; i >= 0; i--){                     //Imprime el estado de cada led.
         if(bitGet('A', i)){                        
             putchar(ON);                           //Si es 1, imprime un '*' 
         }

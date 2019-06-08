@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "hardware.h"
 #include "funbits.h"
 
@@ -27,18 +28,12 @@ void hardware (void) {
     int i;
     for(i=0 ; i<BYTE ; i++) {
         export_led( leds[i] );
-        //carpeta(leds[i] , puntero , "/direction");
+        //usleep(1000);
+        sleep(1);
+        carpeta(leds[i] , puntero , "/direction");
         //printf("FOlder: %s, i = %d\n", folder, i);
-        //set_direction_out(folder);
+        set_direction_out(folder);
     }
-    set_direction_out("/sys/class/gpio/gpio17/direction");
-    set_direction_out("/sys/class/gpio/gpio4/direction");
-    set_direction_out("/sys/class/gpio/gpio18/direction");
-    set_direction_out("/sys/class/gpio/gpio23/direction");
-    set_direction_out("/sys/class/gpio/gpio24/direction");
-    set_direction_out("/sys/class/gpio/gpio25/direction");
-    set_direction_out("/sys/class/gpio/gpio22/direction");
-    set_direction_out("/sys/class/gpio/gpio27/direction");
     return;
 }
 
@@ -59,7 +54,27 @@ static void export_led (const char *ledx) {
         exit(1);
     }
     else
-        printf("EXPORT File opened succesfully\n");
+        //printf("EXPORT File opened succesfully\n");
+    fclose(handle_export); // Be carefulldo this for EACH pin !!!
+    return;
+}
+
+static void unexport_led (const char *ledx) {
+    FILE *handle_export;
+    int nWritten;
+    if ((handle_export = fopen("/sys/class/gpio/unexport","w")) == NULL)
+    {
+        printf("Cannot open UNEXPORT File. Try again later.\n");
+        exit(1);
+    }
+    nWritten = fputs(ledx , handle_export);
+    if (nWritten == -1)
+    {
+        printf("Cannot UNEXPORT PIN . Try again later.\n");
+        exit(1);
+    }
+    else
+        //printf("EXPORT File opened succesfully\n");
     fclose(handle_export); // Be carefulldo this for EACH pin !!!
     return;
 }
@@ -67,7 +82,7 @@ static void export_led (const char *ledx) {
 static void set_direction_out (char *carpeta) {
     FILE * handle_direction;
     int nWritten;
-    printf("Escribo en: %s\n", carpeta);
+    //printf("Escribo en: %s\n", carpeta);
     if ((handle_direction= fopen(carpeta,"w")) == NULL) {
         printf("Cannot open DIRECTION File %s\n", carpeta);
         exit(1);
@@ -78,7 +93,7 @@ static void set_direction_out (char *carpeta) {
         exit(1);
     }
     else {
-        printf("DIRECTION File for PIN opened succesfully\n");
+        //printf("DIRECTION File for PIN opened succesfully\n");
     }
     fclose(handle_direction); // Be carefull do this for EACH pin !!!
     return;
@@ -94,7 +109,7 @@ void set_status (char state , char * pin)
     }
     else
     {
-        printf("Device successfully opened\n");
+        //printf("Device successfully opened\n");
     }
     if(fputc(state + '0' ,handle)==-1) // Set pin low
     {
@@ -102,7 +117,7 @@ void set_status (char state , char * pin)
         exit(1);
     }
     else{
-        printf("Write to file %s successfully done.\n",pin);
+        //printf("Write to file %s successfully done.\n",pin);
     }
     fclose(handle);
     return;
@@ -125,3 +140,13 @@ void rpLeds (void){
         set_status( (char)bitGet('A' , i) , folder );
     }
 } 
+
+void release(void){
+    int i;
+    for(i=0 ; i<BYTE ; i++) {
+        unexport_led( leds[i] );
+        usleep(1000);
+    }
+    return;
+}
+

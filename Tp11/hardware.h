@@ -18,6 +18,7 @@
 
 void hardware (void);
 void set_status (char state , char * pin);
+void release(void);
 void rpLeds (void);
 
 #endif /* HARDWARE_H */

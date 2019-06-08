@@ -19,5 +19,6 @@
 int main (void) {
     hardware();
     simulate();
+    release();
     return 0;
 }

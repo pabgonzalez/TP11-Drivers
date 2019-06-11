@@ -141,11 +141,19 @@ void rpLeds (void){
     }
 } 
 
+void rpLeds_Off (void){
+    int i;
+    for (i=0 ; i<BYTE ; i++) {
+        carpeta(leds[i] , puntero , "/value");
+        set_status( (char)0 , folder );
+    }
+} 
+
 void release(void){
     int i;
     for(i=0 ; i<BYTE ; i++) {
         unexport_led( leds[i] );
-        usleep(1000);
+        sleep(1);
     }
     return;
 }

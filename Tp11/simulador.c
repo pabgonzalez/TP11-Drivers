@@ -12,6 +12,8 @@
 #include "funbits.h"
 #include "hardware.h"
 #include "simulador.h"
+#include <pthread.h>
+#include <unistd.h>
 
 /*******************************************************************************
  * CONSTANT AND MACRO DEFINITIONS USING #DEFINE
@@ -28,18 +30,23 @@ static void turn_off(void);
 static void negate(void);
 static void printLeds(void);
 static void cleanBuffer(void);
-
-
+static void hideLeds(void);
+void *thread_blynk();
+static int state;
 /*******************************************************************************
  *******************************************************************************
                         GLOBAL FUNCTION DEFINITIONS
  *******************************************************************************
  ******************************************************************************/
 void simulate(void){
+    pthread_t blynk;
+    pthread_create(&blynk, NULL, thread_blynk, NULL);
+    
     char input = 0;
     printf("Simulador de Leds.\nNumero 0-7: cambia el estado de ese led.\n"
             "s: enciende todos los leds.\nc: apaga todos los leds.\nt: cambia el"
             "estado de todos los leds.\n");
+    sleep(2);
     while((input = getchar())!= 'q'){           //mientras el usuario no ingrese 'q'
         cleanBuffer();                          //se reinicia el buffer.
         if((input <= '7') && (input >= '0')){   //Si se ingrsa un número entre 0 y 7, ese led cambia de estado.
@@ -53,6 +60,12 @@ void simulate(void){
         }
         else if(input == 't'){                  //Con 't' cambian de estado todos los leds.
             negate();
+        }
+        else if(input == 'b'){
+            if(state == 1)
+                state = 0;
+            else
+                state = 1;
         }
         else{                                   //Cualquiera otra entrada se toma como inválida.
             printf("Operacion invalida\n");
@@ -112,13 +125,43 @@ static void printLeds(void){
     return;
 }
 
+static void hideLeds(void){
+    int i;                                      
+    printf("-----------------\n");
+    printf("|     PORTA     |\n");
+    printf("-----------------\n");
+    putchar('|');
+    for(i = BYTE-1; i >= 0; i--){                     //Imprime el estado de cada led.
+        putchar(OFF);
+        putchar('|');
+    }
+    putchar('\n');
+    printf("-----------------\n");
+    return;
+}
+
 /* cleanBuffer: vacía el buffer de getchar()*/
 static void cleanBuffer(void){
     while(getchar() != '\n'){}
     return;
 }
 
-
+void * thread_blynk(){
+    while (1){
+        if (state == 1){
+            hideLeds();
+            rpLeds_Off();
+            sleep(1);
+            printLeds();
+            rpLeds();
+            sleep(1);
+        }
+        /*else{
+            printLeds();
+            sleep(1);
+        }*/
+    }
+}
 
 /*******************************************************************************
  ******************************************************************************/
